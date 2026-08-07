@@ -192,7 +192,7 @@ em.hl { font-style: normal; color: var(--accent-2); }
   transition: height 0.4s var(--ease), background 0.4s var(--ease), border-color 0.4s var(--ease);
   border-bottom: 1px solid transparent;
 }
-.header::before { content: ""; position: absolute; inset: 0; background: rgba(9, 9, 11, 0.72); backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%); opacity: 0; transition: opacity 0.4s var(--ease); z-index: -1; }
+.header::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,8,10,0.9) 0%, rgba(8,8,10,0.55) 55%, rgba(8,8,10,0) 100%); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.4s var(--ease); z-index: -1; }
 .header.is-scrolled { height: 72px; border-bottom-color: var(--line); }
 .header.is-scrolled::before { opacity: 1; }
 .header .container--wide { display: flex; align-items: center; justify-content: space-between; width: 100%; }
@@ -275,7 +275,7 @@ em.hl { font-style: normal; color: var(--accent-2); }
 .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; padding-top: calc(var(--header-h) + 22px); padding-bottom: clamp(26px, 3.4vw, 48px); overflow: hidden; }
 .hero__media { position: absolute; inset: 0; z-index: 0; }
 .hero__media img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.92) contrast(1.06); }
-.hero__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,8,10,0.74) 0%, rgba(8,8,10,0.3) 20%, rgba(8,8,10,0.52) 52%, rgba(8,8,10,0.93) 84%, var(--bg) 100%), linear-gradient(90deg, rgba(8,8,10,0.9) 0%, rgba(8,8,10,0.42) 42%, transparent 74%); }
+.hero__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,8,10,0.5) 0%, rgba(8,8,10,0.16) 22%, rgba(8,8,10,0.4) 56%, rgba(8,8,10,0.9) 85%, var(--bg) 100%), linear-gradient(90deg, rgba(8,8,10,0.82) 0%, rgba(8,8,10,0.3) 46%, transparent 72%); }
 
 .hero__grid { position: relative; z-index: 2; width: 100%; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; }
 .hero__side { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 18px; }
