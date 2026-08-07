@@ -1,0 +1,152 @@
+[
+  {
+    "file": "hero/hero-1.jpg",
+    "photographer": "Sergey  Meshkov",
+    "url": "https://www.pexels.com/photo/man-in-black-crew-neck-t-shirt-fixing-a-car-8478259/"
+  },
+  {
+    "file": "hero/hero-2.jpg",
+    "photographer": "Ayyeee Ayyeee",
+    "url": "https://www.pexels.com/photo/close-up-of-car-engine-components-in-sunlight-37177077/"
+  },
+  {
+    "file": "hero/hero-3.jpg",
+    "photographer": "Sergey  Meshkov",
+    "url": "https://www.pexels.com/photo/person-holding-car-wiper-8478201/"
+  },
+  {
+    "file": "hero/hero-4.jpg",
+    "photographer": "Anna Shvets",
+    "url": "https://www.pexels.com/photo/person-in-black-jacket-working-on-the-engine-of-the-car-4315575/"
+  },
+  {
+    "file": "services/oil-1.jpg",
+    "photographer": "Daniel Andraski",
+    "url": "https://www.pexels.com/photo/close-up-of-pouring-oil-to-engine-13065697/"
+  },
+  {
+    "file": "services/oil-2.jpg",
+    "photographer": "Gera Cejas",
+    "url": "https://www.pexels.com/photo/a-man-is-working-on-a-motorcycle-27704018/"
+  },
+  {
+    "file": "services/oil-3.jpg",
+    "photographer": "Gustavo Fring",
+    "url": "https://www.pexels.com/photo/person-holding-a-yellow-dipstick-4895412/"
+  },
+  {
+    "file": "services/oil-4.jpg",
+    "photographer": "Sandeep Singh",
+    "url": "https://www.pexels.com/photo/cylinder-head-of-an-engine-8651903/"
+  },
+  {
+    "file": "services/mechanic-1.jpg",
+    "photographer": "Imtiaz Ahmed",
+    "url": "https://www.pexels.com/photo/a-mechanic-holding-a-tire-wrench-7807035/"
+  },
+  {
+    "file": "services/mechanic-2.jpg",
+    "photographer": "Artem Podrez",
+    "url": "https://www.pexels.com/photo/man-in-blue-coverall-standing-near-a-white-car-8986132/"
+  },
+  {
+    "file": "services/mechanic-3.jpg",
+    "photographer": "cottonbro studio",
+    "url": "https://www.pexels.com/photo/man-in-black-jacket-and-blue-denim-jeans-standing-beside-black-horse-4489761/"
+  },
+  {
+    "file": "services/mechanic-4.jpg",
+    "photographer": "Artem Podrez",
+    "url": "https://www.pexels.com/photo/car-for-repair-in-monochrome-photography-8986035/"
+  },
+  {
+    "file": "services/filter-1.jpg",
+    "photographer": "Mathias Reding",
+    "url": "https://www.pexels.com/photo/a-person-putting-air-filter-in-the-car-9381003/"
+  },
+  {
+    "file": "services/filter-2.jpg",
+    "photographer": "Mathias Reding",
+    "url": "https://www.pexels.com/photo/a-person-putting-air-filter-in-the-car-9381013/"
+  },
+  {
+    "file": "services/filter-3.jpg",
+    "photographer": "Kampus Production",
+    "url": "https://www.pexels.com/photo/a-man-checking-the-oil-of-a-car-engine-7854100/"
+  },
+  {
+    "file": "about/garage-1.jpg",
+    "photographer": "Renee Razumov",
+    "url": "https://www.pexels.com/photo/modern-car-repair-shop-interior-with-vehicle-33814736/"
+  },
+  {
+    "file": "about/garage-2.jpg",
+    "photographer": "Renee Razumov",
+    "url": "https://www.pexels.com/photo/car-repair-and-maintenance-workshop-interior-33814734/"
+  },
+  {
+    "file": "about/garage-3.jpg",
+    "photographer": "Artem Podrez",
+    "url": "https://www.pexels.com/photo/side-view-of-a-car-in-a-garage-8985923/"
+  },
+  {
+    "file": "about/garage-4.jpg",
+    "photographer": "Ivan Chumak",
+    "url": "https://www.pexels.com/photo/red-sports-car-on-lift-in-auto-repair-garage-37163499/"
+  },
+  {
+    "file": "gallery/engine-1.jpg",
+    "photographer": "Sebastian Dziomba",
+    "url": "https://www.pexels.com/photo/pipe-and-car-parts-26083202/"
+  },
+  {
+    "file": "gallery/engine-2.jpg",
+    "photographer": "Hebert  Santos",
+    "url": "https://www.pexels.com/photo/close-up-photo-of-black-and-silver-car-engine-3757226/"
+  },
+  {
+    "file": "gallery/engine-3.jpg",
+    "photographer": "Ayyeee Ayyeee",
+    "url": "https://www.pexels.com/photo/close-up-of-car-engine-components-in-sunlight-37177077/"
+  },
+  {
+    "file": "gallery/engine-4.jpg",
+    "photographer": "Bálint Varga",
+    "url": "https://www.pexels.com/photo/close-up-of-modern-car-details-10798219/"
+  },
+  {
+    "file": "gallery/car-1.jpg",
+    "photographer": "Pixabay",
+    "url": "https://www.pexels.com/photo/black-coupe-on-black-surface-261985/"
+  },
+  {
+    "file": "gallery/car-2.jpg",
+    "photographer": "Pixabay",
+    "url": "https://www.pexels.com/photo/gray-aston-martin-vehicle-surrounded-with-dark-94272/"
+  },
+  {
+    "file": "gallery/car-3.jpg",
+    "photographer": "Alan Cordero",
+    "url": "https://www.pexels.com/photo/a-black-sports-car-parked-on-pavement-12066287/"
+  },
+  {
+    "file": "about/team-1.jpg",
+    "photographer": "Artem Podrez",
+    "url": "https://www.pexels.com/photo/man-in-blue-coverall-standing-near-a-car-8985967/"
+  },
+  {
+    "file": "about/team-2.jpg",
+    "photographer": "Natalia Olivera",
+    "url": "https://www.pexels.com/photo/portrait-of-a-mature-mechanic-in-a-workshop-31295161/"
+  },
+  {
+    "file": "about/team-3.jpg",
+    "photographer": "cottonbro studio",
+    "url": "https://www.pexels.com/photo/a-mechanic-leaning-on-an-engine-7564867/"
+  },
+  {
+    "file": "about/team-4.jpg",
+    "photographer": "cottonbro studio",
+    "url": "https://www.pexels.com/photo/mechanic-standing-in-a-truck-repair-shop-7564855/"
+  }
+]
