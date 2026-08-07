@@ -88,13 +88,11 @@ p { margin: 0; }
   opacity: 0.04; mix-blend-mode: overlay;
 }
 
-/* ---------- Custom cursor (JS-driven: yellow arrow + pointer ring) ---------- */
+/* ---------- Custom cursor: a yellow OS-style arrow pointer ---------- */
 .cur { position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none; will-change: transform; transition: opacity 0.25s var(--ease); }
-.cur__arrow { position: absolute; left: -3px; top: -2px; width: 26px; height: 26px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.4)); transition: opacity 0.18s var(--ease), transform 0.18s var(--ease); }
-.cur__ring { position: absolute; left: 0; top: 0; width: 42px; height: 42px; margin: -21px 0 0 -21px; border-radius: 50%; border: 1.5px solid var(--accent-2); background: rgba(235,187,87,0.10); box-shadow: 0 0 22px rgba(235,187,87,0.25); opacity: 0; transform: scale(0.3); transition: opacity 0.22s var(--ease), transform 0.22s var(--ease); }
-.cur.is-pointer .cur__arrow { opacity: 0; transform: scale(0.4); }
-.cur.is-pointer .cur__ring { opacity: 1; transform: scale(1); }
-.cur.is-down .cur__ring { transform: scale(0.82); }
+.cur__arrow { position: absolute; left: -1px; top: -1px; width: 21px; height: 33px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); transform-origin: 2px 2px; transition: transform 0.14s var(--ease); }
+.cur.is-pointer .cur__arrow { transform: scale(1.18); }
+.cur.is-down .cur__arrow { transform: scale(0.9); }
 @media (hover: none), (pointer: coarse) { .cur { display: none; } html.has-cursor, html.has-cursor * { cursor: auto; } }
 
 /* ---------- Layout ---------- */
@@ -164,13 +162,15 @@ em.hl { font-style: normal; color: var(--accent-2); }
   transition: transform 0.5s var(--ease), background 0.4s var(--ease), color 0.4s var(--ease), box-shadow 0.5s var(--ease), border-color 0.4s var(--ease);
   will-change: transform; overflow: hidden;
 }
-.btn--primary { --pad-x: 26px; background: linear-gradient(135deg, #F6D482 0%, #EBBB57 46%, #D49B3B 100%); color: #1E1406; font-weight: 600; padding-right: 8px; box-shadow: 0 10px 28px -10px rgba(211,155,59,0.55), inset 0 1px 0 rgba(255,255,255,0.65), inset 0 -1.5px 3px rgba(120,70,15,0.4); }
-.btn--primary::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(120% 130% at 50% -10%, rgba(255,243,212,0.9), transparent 58%); opacity: 0; transition: opacity 0.5s var(--ease); z-index: 0; pointer-events: none; }
-.btn--primary:hover::before { opacity: 0.55; }
-.btn--primary:hover { transform: translateY(-2px); box-shadow: 0 20px 46px -12px rgba(211,155,59,0.7), inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1.5px 3px rgba(120,70,15,0.45); }
+/* Primary CTA — rectangular gold-outline that fills gold on hover, with an
+   inverting arrow coin. Deliberately different from the pill ghost buttons. */
+.btn--primary { --pad-x: 22px; border-radius: 10px; background: rgba(235,187,87,0.05); color: var(--accent-2); border: 1.5px solid rgba(235,187,87,0.55); font-weight: 600; z-index: 0; }
+.btn--primary::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(135deg, #F6D482 0%, #EBBB57 50%, #D49B3B 100%); transform: scaleX(0); transform-origin: left; will-change: transform; transition: transform 0.5s cubic-bezier(0.7, 0, 0.2, 1); }
+.btn--primary:hover { color: #1B1204; border-color: var(--accent); box-shadow: 0 16px 40px -14px rgba(211,155,59,0.5); }
+.btn--primary:hover::before { transform: scaleX(1); }
 .btn--primary > * { position: relative; z-index: 1; }
-.btn--primary .btn__ico { width: 26px; height: 26px; padding: 7px; border-radius: 50%; background: rgba(26,17,4,0.16); box-sizing: border-box; transition: background 0.4s var(--ease), color 0.4s var(--ease), transform 0.5s var(--ease); }
-.btn--primary:hover .btn__ico { background: #1B1204; color: #F1C368; transform: translateX(3px); }
+.btn--primary .btn__ico { width: 28px; height: 28px; padding: 7px; border-radius: 50%; background: var(--accent-2); color: #1B1204; box-sizing: border-box; transition: background 0.4s var(--ease), color 0.4s var(--ease), transform 0.5s var(--ease); }
+.btn--primary:hover .btn__ico { background: #1B1204; color: var(--accent-2); transform: translateX(3px); }
 .btn--ghost { border: 1px solid var(--line-2); color: var(--text); background: rgba(255,255,255,0.02); backdrop-filter: blur(6px); }
 .btn--ghost:hover { border-color: var(--accent); color: var(--accent-2); }
 .btn--lg { --pad-y: 19px; --pad-x: 40px; font-size: 14px; }
@@ -215,6 +215,10 @@ em.hl { font-style: normal; color: var(--accent-2); }
 .nav__link.is-active { color: var(--text); }
 
 .header__actions { display: flex; align-items: center; gap: 14px; }
+.header__phone { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.01em; color: var(--text); white-space: nowrap; transition: color 0.3s var(--ease); }
+.header__phone svg { width: 16px; height: 16px; color: var(--accent-2); flex: none; }
+.header__phone:hover { color: var(--accent-2); }
+@media (max-width: 1180px) { .header__phone { display: none; } }
 .header__socials { display: flex; align-items: center; gap: 9px; }
 .header__socials a { width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line-2); color: var(--muted); background: rgba(255,255,255,0.015); transition: color 0.3s var(--ease), border-color 0.3s var(--ease), background 0.3s var(--ease), transform 0.3s var(--ease); }
 .header__socials a:hover { color: var(--accent-2); border-color: rgba(235,187,87,0.5); background: rgba(235,187,87,0.08); transform: translateY(-2px); }

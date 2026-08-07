@@ -419,8 +419,7 @@
     const cur = document.createElement("div");
     cur.className = "cur";
     cur.innerHTML =
-      '<svg class="cur__arrow" viewBox="0 0 26 26" aria-hidden="true"><path d="M4 2 L4 21 L9.2 16.2 L12.4 22.6 L15.2 21.3 L12.1 15 L19 14.8 Z" fill="#EBBB57" stroke="#17110A" stroke-width="1.4" stroke-linejoin="round"/></svg>' +
-      '<span class="cur__ring"></span>';
+      '<svg class="cur__arrow" viewBox="0 0 320 512" aria-hidden="true"><path d="M0 55.2V426c0 12.2 9.9 22 22 22 6.3 0 12.4-2.7 16.6-7.5L121.2 346l58.1 116.3c7.9 15.8 27.1 22.2 42.9 14.3s22.2-27.1 14.3-42.9L179.8 320H297.9c12.2 0 22.1-9.9 22.1-22.1 0-6.4-2.8-12.5-7.6-16.7L38.6 37.9C34.4 34.1 28.9 32 23.2 32 10.4 32 0 42.4 0 55.2z" fill="#EBBB57" stroke="#17110A" stroke-width="26" stroke-linejoin="round"/></svg>';
     document.body.appendChild(cur);
     docEl.classList.add("has-cursor");
     window.addEventListener("pointermove", (e) => {
