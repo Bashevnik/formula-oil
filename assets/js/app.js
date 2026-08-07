@@ -28,11 +28,27 @@
   const countEl = preloader ? preloader.querySelector(".preloader__count") : null;
   const firstVisit = !sessionStorage.getItem("fo_visited");
 
+  // scroll lock that preserves position and never removes the scrollbar
+  // (see body.is-locked in CSS — position:fixed, permanent html scrollbar).
+  let lockedScrollY = 0;
+  function setLock(on) {
+    const b = document.body;
+    if (on) {
+      lockedScrollY = window.scrollY || window.pageYOffset || 0;
+      b.style.top = -lockedScrollY + "px";
+      b.classList.add("is-locked");
+    } else {
+      b.classList.remove("is-locked");
+      b.style.top = "";
+      window.scrollTo(0, lockedScrollY);
+    }
+  }
+
   let heroStarted = false;
   function startHero() {
     if (heroStarted) return;
     heroStarted = true;
-    document.body.classList.remove("is-locked");
+    setLock(false);
     animateHeroIn();
     initReveals();
     initParallax();
@@ -74,7 +90,7 @@
   }
 
   function runPreloader() {
-    document.body.classList.add("is-locked");
+    setLock(true);
     if (!preloader || !hasGSAP || prefersReduced) {
       whenImagesReady(1200).then(() => hidePreloader(true));
       sessionStorage.setItem("fo_visited", "1");
@@ -322,7 +338,7 @@
     const burger = document.querySelector(".burger");
     const menu = document.querySelector(".mobile-menu");
     if (!burger || !menu) return;
-    const toggle = (open) => { burger.classList.toggle("is-open", open); menu.classList.toggle("is-open", open); document.body.classList.toggle("is-locked", open); };
+    const toggle = (open) => { burger.classList.toggle("is-open", open); menu.classList.toggle("is-open", open); setLock(open); };
     burger.addEventListener("click", () => toggle(!menu.classList.contains("is-open")));
     menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => toggle(false)));
   }
@@ -396,6 +412,29 @@
   /* ==========================================================
      CUSTOM CURSOR + MAGNETIC
   ========================================================== */
+  // Custom cursor: a yellow arrow that follows the pointer EXACTLY (no lerp →
+  // no lag/shake), morphing into a ring over clickable elements.
+  function initCursor() {
+    if (!finePointer || prefersReduced) return;
+    const cur = document.createElement("div");
+    cur.className = "cur";
+    cur.innerHTML =
+      '<svg class="cur__arrow" viewBox="0 0 26 26" aria-hidden="true"><path d="M4 2 L4 21 L9.2 16.2 L12.4 22.6 L15.2 21.3 L12.1 15 L19 14.8 Z" fill="#EBBB57" stroke="#17110A" stroke-width="1.4" stroke-linejoin="round"/></svg>' +
+      '<span class="cur__ring"></span>';
+    document.body.appendChild(cur);
+    docEl.classList.add("has-cursor");
+    window.addEventListener("pointermove", (e) => {
+      cur.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    }, { passive: true });
+    const sel = "a, button, .chip, .faq__q, label, summary, [role=button], .burger, .quote__ava, input[type=submit]";
+    document.addEventListener("pointerover", (e) => { if (e.target.closest && e.target.closest(sel)) cur.classList.add("is-pointer"); });
+    document.addEventListener("pointerout", (e) => { if (e.target.closest && e.target.closest(sel)) cur.classList.remove("is-pointer"); });
+    window.addEventListener("pointerdown", () => cur.classList.add("is-down"));
+    window.addEventListener("pointerup", () => cur.classList.remove("is-down"));
+    document.addEventListener("mouseleave", () => { cur.style.opacity = "0"; });
+    document.addEventListener("mouseenter", () => { cur.style.opacity = "1"; });
+  }
+
   function initMagnetic() {
     if (!finePointer || prefersReduced || !hasGSAP) return;
     document.querySelectorAll(".btn--primary, [data-magnetic]").forEach((el) => {
@@ -438,6 +477,7 @@
     initFaq();
     initChips();
     initForm();
+    initCursor();
     initMagnetic();
     initToTop();
     initYear();
