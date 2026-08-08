@@ -293,7 +293,7 @@
     const wrap = document.querySelector(".reviews-marquee");
     const track = wrap && wrap.querySelector(".reviews-track");
     if (!wrap || !track) return;
-    let pos = 0, paused = false, down = false, startX = 0, startScroll = 0, moved = false;
+    let pos = 0, paused = false, down = false, startX = 0, startScroll = 0, moved = false, resumeT;
     const wrapAround = () => { const h = wrap.scrollWidth / 2; if (h > 0) { if (pos >= h) pos -= h; else if (pos < 0) pos += h; } return h; };
     const tick = () => {
       if (down || paused) { pos = wrap.scrollLeft; }
@@ -301,16 +301,26 @@
       requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
-    wrap.addEventListener("pointerenter", () => { paused = true; });
-    wrap.addEventListener("pointerleave", () => { paused = false; down = false; wrap.classList.remove("is-dragging"); });
-    wrap.addEventListener("pointerdown", (e) => { down = true; moved = false; startX = e.clientX; startScroll = wrap.scrollLeft; wrap.classList.add("is-dragging"); });
+    // mouse: hover pauses, drag scrolls
+    wrap.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") paused = true; });
+    wrap.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") { paused = false; down = false; wrap.classList.remove("is-dragging"); } });
+    wrap.addEventListener("pointerdown", (e) => {
+      clearTimeout(resumeT); paused = true;                 // pause auto-scroll for any input
+      if (e.pointerType === "mouse") { down = true; moved = false; startX = e.clientX; startScroll = wrap.scrollLeft; wrap.classList.add("is-dragging"); }
+    });
     window.addEventListener("pointermove", (e) => {
-      if (!down) return;
+      if (!down) return;                                    // mouse-drag only; touch uses native scroll
       const dx = e.clientX - startX;
       if (Math.abs(dx) > 3) moved = true;
       pos = startScroll - dx; wrapAround(); wrap.scrollLeft = pos;
     }, { passive: true });
-    window.addEventListener("pointerup", () => { down = false; wrap.classList.remove("is-dragging"); });
+    const endInput = (e) => {
+      down = false; wrap.classList.remove("is-dragging");
+      // touch: let native momentum settle before auto-scroll resumes
+      if (!e || e.pointerType !== "mouse") { clearTimeout(resumeT); resumeT = setTimeout(() => { paused = false; }, 1400); }
+    };
+    window.addEventListener("pointerup", endInput);
+    window.addEventListener("pointercancel", endInput);
     track.addEventListener("click", (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
   }
 
