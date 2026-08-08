@@ -44,15 +44,26 @@
     }
   }
 
+  // Hard fallback: make the above-the-fold hero text visible no matter what
+  // (used if an animation step throws on some browser, e.g. iOS Safari).
+  function forceRevealHero() {
+    try {
+      document.querySelectorAll(".hero__title .line > span, .hero [data-hero], .page-hero [data-hero]").forEach((el) => {
+        el.style.transform = "none"; el.style.opacity = "1";
+      });
+    } catch (e) {}
+  }
+
   let heroStarted = false;
   function startHero() {
     if (heroStarted) return;
     heroStarted = true;
-    setLock(false);
-    animateHeroIn();
-    initReveals();
-    initParallax();
-    if (hasGSAP && window.ScrollTrigger) ScrollTrigger.refresh();
+    // Each step is isolated: one failure must never leave the page frozen/blank.
+    try { setLock(false); } catch (e) {}
+    try { animateHeroIn(); } catch (e) { forceRevealHero(); }
+    try { initReveals(); } catch (e) {}
+    try { initParallax(); } catch (e) {}
+    try { if (hasGSAP && window.ScrollTrigger) ScrollTrigger.refresh(); } catch (e) {}
   }
 
   let preloaderHidden = false;
@@ -72,25 +83,26 @@
 
   // Resolve once the above-the-fold images are actually decoded (so the page is
   // ready to show by the time the preloader lifts), or after a hard cap.
+  // Wait only for the eager hero/page-hero image (never for lazy ones — decode()
+  // on a not-yet-loaded lazy image is flaky on iOS Safari). Always time-capped.
   function whenImagesReady(maxWait) {
     return new Promise((resolve) => {
-      const imgs = [].slice.call(
-        document.querySelectorAll(".hero__media img, .section--tight img, #services .svc img, .showcase img")
-      ).slice(0, 6);
+      const img = document.querySelector(".hero__media img, .page-hero__media img");
       let done = false;
       const finish = () => { if (done) return; done = true; resolve(); };
-      if (!imgs.length) return finish();
-      let pending = imgs.length;
-      imgs.forEach((img) => {
-        const dec = img.decode ? img.decode().catch(() => {}) : Promise.resolve();
-        Promise.resolve(dec).then(() => { if (--pending <= 0) finish(); });
-      });
-      setTimeout(finish, maxWait || 1600);
+      if (!img || img.complete) return finish();
+      img.addEventListener("load", finish, { once: true });
+      img.addEventListener("error", finish, { once: true });
+      setTimeout(finish, maxWait || 1200);
     });
   }
 
   function runPreloader() {
     setLock(true);
+    // Unconditional safety nets: no matter what stalls (image decode, a GSAP
+    // hiccup on iOS Safari, etc.) the preloader lifts and the hero shows.
+    setTimeout(forceHide, 4000);
+    setTimeout(() => { try { setLock(false); } catch (e) {} forceRevealHero(); }, 5500);
     if (!preloader || !hasGSAP || prefersReduced) {
       whenImagesReady(1200).then(() => hidePreloader(true));
       sessionStorage.setItem("fo_visited", "1");
