@@ -278,19 +278,40 @@
      MARQUEE
   ========================================================== */
   function initMarquee() {
-    document.querySelectorAll(".marquee__track, .reviews-track").forEach((track) => {
+    document.querySelectorAll(".marquee__track").forEach((track) => {
       if (!hasGSAP || prefersReduced) return;
       const right = track.getAttribute("data-dir") === "right";
       const speed = parseFloat(track.getAttribute("data-speed")) || 32;
-      let tween;
-      if (right) { gsap.set(track, { xPercent: -50 }); tween = gsap.to(track, { xPercent: 0, duration: speed, ease: "none", repeat: -1 }); }
-      else { tween = gsap.to(track, { xPercent: -50, duration: speed, ease: "none", repeat: -1 }); }
-      const host = track.closest(".reviews-marquee");
-      if (host) {
-        host.addEventListener("pointerenter", () => gsap.to(tween, { timeScale: 0, duration: 0.4 }));
-        host.addEventListener("pointerleave", () => gsap.to(tween, { timeScale: 1, duration: 0.4 }));
-      }
+      if (right) { gsap.set(track, { xPercent: -50 }); gsap.to(track, { xPercent: 0, duration: speed, ease: "none", repeat: -1 }); }
+      else { gsap.to(track, { xPercent: -50, duration: speed, ease: "none", repeat: -1 }); }
     });
+  }
+
+  // Reviews: native-scroll carousel that auto-drifts, pauses on hover, and can
+  // be dragged/swiped with the pointer. Cards are duplicated → seamless loop.
+  function initReviews() {
+    const wrap = document.querySelector(".reviews-marquee");
+    const track = wrap && wrap.querySelector(".reviews-track");
+    if (!wrap || !track) return;
+    let pos = 0, paused = false, down = false, startX = 0, startScroll = 0, moved = false;
+    const wrapAround = () => { const h = wrap.scrollWidth / 2; if (h > 0) { if (pos >= h) pos -= h; else if (pos < 0) pos += h; } return h; };
+    const tick = () => {
+      if (down || paused) { pos = wrap.scrollLeft; }
+      else { pos += 0.55; wrapAround(); wrap.scrollLeft = pos; }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    wrap.addEventListener("pointerenter", () => { paused = true; });
+    wrap.addEventListener("pointerleave", () => { paused = false; down = false; wrap.classList.remove("is-dragging"); });
+    wrap.addEventListener("pointerdown", (e) => { down = true; moved = false; startX = e.clientX; startScroll = wrap.scrollLeft; wrap.classList.add("is-dragging"); });
+    window.addEventListener("pointermove", (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 3) moved = true;
+      pos = startScroll - dx; wrapAround(); wrap.scrollLeft = pos;
+    }, { passive: true });
+    window.addEventListener("pointerup", () => { down = false; wrap.classList.remove("is-dragging"); });
+    track.addEventListener("click", (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
   }
 
   /* ==========================================================
@@ -303,6 +324,14 @@
       const target = parseFloat(el.getAttribute("data-count"));
       const suffix = el.getAttribute("data-suffix") || "";
       if (!hasGSAP || prefersReduced) { el.textContent = target + suffix; return; }
+      // Reserve the FINAL rendered width up-front so the number growing digits
+      // (0→6000) never reflows the flex row = kills the horizontal "shake".
+      const box = el.parentElement;
+      if (box && !box.style.minWidth) {
+        el.textContent = Math.round(target) + suffix;
+        box.style.minWidth = Math.ceil(box.getBoundingClientRect().width) + "px";
+      }
+      el.textContent = "0" + suffix;
       const obj = { v: 0 };
       gsap.to(obj, { v: target, duration: 1.9, ease: "power2.out", onUpdate: () => { el.textContent = Math.round(obj.v) + suffix; } });
     };
@@ -419,19 +448,25 @@
     const cur = document.createElement("div");
     cur.className = "cur";
     cur.innerHTML =
-      '<svg class="cur__arrow" viewBox="0 0 320 512" aria-hidden="true"><path d="M0 55.2V426c0 12.2 9.9 22 22 22 6.3 0 12.4-2.7 16.6-7.5L121.2 346l58.1 116.3c7.9 15.8 27.1 22.2 42.9 14.3s22.2-27.1 14.3-42.9L179.8 320H297.9c12.2 0 22.1-9.9 22.1-22.1 0-6.4-2.8-12.5-7.6-16.7L38.6 37.9C34.4 34.1 28.9 32 23.2 32 10.4 32 0 42.4 0 55.2z" fill="#EBBB57" stroke="#17110A" stroke-width="26" stroke-linejoin="round"/></svg>';
+      '<svg class="cur__arrow" viewBox="0 0 320 512" aria-hidden="true"><path d="M0 55.2V426c0 12.2 9.9 22 22 22 6.3 0 12.4-2.7 16.6-7.5L121.2 346l58.1 116.3c7.9 15.8 27.1 22.2 42.9 14.3s22.2-27.1 14.3-42.9L179.8 320H297.9c12.2 0 22.1-9.9 22.1-22.1 0-6.4-2.8-12.5-7.6-16.7L38.6 37.9C34.4 34.1 28.9 32 23.2 32 10.4 32 0 42.4 0 55.2z" fill="#EBBB57" stroke="#17110A" stroke-width="26" stroke-linejoin="round"/></svg>' +
+      '<svg class="cur__hand" viewBox="0 0 448 512" aria-hidden="true"><path d="M128 40c0-22.1 17.9-40 40-40s40 17.9 40 40V188.2c8.5-7.6 19.7-12.2 32-12.2c20.6 0 38.2 13 45 31.2c8.8-9.3 21.2-15.2 35-15.2c25.3 0 46 19.5 47.9 44.3c7.1-4 15.3-6.3 24.1-6.3c26.5 0 48 21.5 48 48v48 24 24c0 70.7-57.3 128-128 128H240 208c-.5 0-.9 0-1.4 0c-43.6-.6-79.9-31.4-89-72.4c-.9-4.2-3.1-8.1-6.2-11.1L24.8 361c-19.6-19.4-24.4-49.2-11.9-73.9C24.5 264 47.6 250.3 72.2 250.6c14.8 .2 29 5.6 40.1 15L128 280.6V40z" fill="#EBBB57" stroke="#17110A" stroke-width="24" stroke-linejoin="round"/></svg>';
     document.body.appendChild(cur);
     docEl.classList.add("has-cursor");
     window.addEventListener("pointermove", (e) => {
       cur.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
     }, { passive: true });
-    const sel = "a, button, .chip, .faq__q, label, summary, [role=button], .burger, .quote__ava, input[type=submit]";
+    const sel = "a, button, select, label, summary, [role=button], [onclick], [tabindex]:not([tabindex='-1']), .chip, .faq__q, .burger, .phone-fab__btn, .to-top, .link-arrow, .reviews-marquee, input[type=submit], input[type=button]";
     document.addEventListener("pointerover", (e) => { if (e.target.closest && e.target.closest(sel)) cur.classList.add("is-pointer"); });
     document.addEventListener("pointerout", (e) => { if (e.target.closest && e.target.closest(sel)) cur.classList.remove("is-pointer"); });
     window.addEventListener("pointerdown", () => cur.classList.add("is-down"));
     window.addEventListener("pointerup", () => cur.classList.remove("is-down"));
     document.addEventListener("mouseleave", () => { cur.style.opacity = "0"; });
     document.addEventListener("mouseenter", () => { cur.style.opacity = "1"; });
+    // Hide our cursor over iframes (Google Maps) → native map cursor takes over
+    document.querySelectorAll("iframe").forEach((f) => {
+      f.addEventListener("mouseenter", () => { cur.style.opacity = "0"; });
+      f.addEventListener("mouseleave", () => { cur.style.opacity = "1"; });
+    });
   }
 
   // floating phone button → toggles a compact numbers panel
@@ -482,6 +517,7 @@
     initHeader();
     initMenu();
     initMarquee();
+    initReviews();
     initCounters();
     initCardGlow();
     initFaq();
@@ -489,7 +525,6 @@
     initForm();
     initCursor();
     initPhoneFab();
-    initMagnetic();
     initToTop();
     initYear();
     runPreloader();   // reveals + parallax start after preloader lifts (startHero)
