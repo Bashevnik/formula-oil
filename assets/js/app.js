@@ -434,6 +434,17 @@
     document.addEventListener("mouseenter", () => { cur.style.opacity = "1"; });
   }
 
+  // floating phone button → toggles a compact numbers panel
+  function initPhoneFab() {
+    const fab = document.querySelector("[data-phone-fab]");
+    if (!fab) return;
+    const btn = fab.querySelector(".phone-fab__btn");
+    const setOpen = (open) => { fab.classList.toggle("is-open", open); btn.setAttribute("aria-expanded", open ? "true" : "false"); };
+    btn.addEventListener("click", (e) => { e.stopPropagation(); setOpen(!fab.classList.contains("is-open")); });
+    document.addEventListener("click", (e) => { if (!fab.contains(e.target)) setOpen(false); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
+  }
+
   function initMagnetic() {
     if (!finePointer || prefersReduced || !hasGSAP) return;
     document.querySelectorAll(".btn--primary, [data-magnetic]").forEach((el) => {
@@ -477,6 +488,7 @@
     initChips();
     initForm();
     initCursor();
+    initPhoneFab();
     initMagnetic();
     initToTop();
     initYear();
