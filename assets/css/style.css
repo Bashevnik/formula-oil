@@ -290,18 +290,14 @@ em.hl { font-style: normal; color: var(--accent-2); }
 .hero__title em { font-style: normal; color: var(--accent-2); }
 .hero__title .outline { color: transparent; -webkit-text-stroke: 1.5px var(--text); }
 
-/* hero phones — visible right under the header on the homepage */
-.hero__topline { display: flex; align-items: center; justify-content: space-between; gap: 16px 28px; flex-wrap: wrap; }
-.hero__phones { display: inline-flex; align-items: center; gap: 18px; padding: 10px 20px; border: 1px solid rgba(235,187,87,0.28); border-radius: 100px; background: rgba(12,11,10,0.45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 12px 34px -16px rgba(0,0,0,0.7); }
-.hero__phones-status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-2); white-space: nowrap; }
+/* hero phones — clean line right under the header (replaces the old kicker) */
+.hero__phones { display: inline-flex; align-items: center; gap: 22px; flex-wrap: wrap; align-self: flex-start; }
+.hero__phones-status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-2); white-space: nowrap; }
 .hero__phones-status i { width: 7px; height: 7px; border-radius: 50%; background: #57C77A; box-shadow: 0 0 0 0 rgba(87,199,122,0.6); animation: pulse 2s infinite; flex: none; }
-.hero__phones a { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 14px; color: var(--text); white-space: nowrap; transition: color 0.3s var(--ease); }
-.hero__phones a svg { width: 15px; height: 15px; color: var(--accent-2); flex: none; }
+.hero__phones a { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-mono); font-size: clamp(15px, 1.5vw, 18px); font-weight: 500; letter-spacing: 0.02em; color: var(--text); white-space: nowrap; text-shadow: 0 1px 12px rgba(0,0,0,0.55); transition: color 0.3s var(--ease); }
+.hero__phones a svg { width: 16px; height: 16px; color: var(--accent-2); flex: none; }
 .hero__phones a:hover { color: var(--accent-2); }
-@media (max-width: 680px) {
-  .hero__phones { flex-wrap: wrap; gap: 10px 16px; border-radius: 20px; }
-  .hero__phones-status { width: 100%; }
-}
+@media (max-width: 620px) { .hero__phones { gap: 8px 18px; } .hero__phones-status { width: 100%; } }
 
 .hero__bottom { display: flex; flex-wrap: wrap; gap: 26px 56px; align-items: flex-end; justify-content: space-between; }
 .hero__lead-wrap { max-width: 500px; display: flex; flex-direction: column; gap: 22px; }
