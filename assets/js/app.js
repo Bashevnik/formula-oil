@@ -452,8 +452,13 @@
       '<svg class="cur__hand" viewBox="0 0 448 512" aria-hidden="true"><path d="M128 40c0-22.1 17.9-40 40-40s40 17.9 40 40V188.2c8.5-7.6 19.7-12.2 32-12.2c20.6 0 38.2 13 45 31.2c8.8-9.3 21.2-15.2 35-15.2c25.3 0 46 19.5 47.9 44.3c7.1-4 15.3-6.3 24.1-6.3c26.5 0 48 21.5 48 48v48 24 24c0 70.7-57.3 128-128 128H240 208c-.5 0-.9 0-1.4 0c-43.6-.6-79.9-31.4-89-72.4c-.9-4.2-3.1-8.1-6.2-11.1L24.8 361c-19.6-19.4-24.4-49.2-11.9-73.9C24.5 264 47.6 250.3 72.2 250.6c14.8 .2 29 5.6 40.1 15L128 280.6V40z" fill="#EBBB57" stroke="#17110A" stroke-width="24" stroke-linejoin="round"/></svg>';
     document.body.appendChild(cur);
     docEl.classList.add("has-cursor");
+    // Hide until the first real pointer move so it never sits stuck in the
+    // top-left corner right after a page load / page transition.
+    cur.style.opacity = "0";
+    let shown = false;
     window.addEventListener("pointermove", (e) => {
       cur.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+      if (!shown) { shown = true; cur.style.opacity = "1"; }
     }, { passive: true });
     const sel = "a, button, select, label, summary, [role=button], [onclick], [tabindex]:not([tabindex='-1']), .chip, .faq__q, .burger, .phone-fab__btn, .to-top, .link-arrow, .reviews-marquee, input[type=submit], input[type=button]";
     document.addEventListener("pointerover", (e) => { if (e.target.closest && e.target.closest(sel)) cur.classList.add("is-pointer"); });
@@ -461,11 +466,11 @@
     window.addEventListener("pointerdown", () => cur.classList.add("is-down"));
     window.addEventListener("pointerup", () => cur.classList.remove("is-down"));
     document.addEventListener("mouseleave", () => { cur.style.opacity = "0"; });
-    document.addEventListener("mouseenter", () => { cur.style.opacity = "1"; });
+    document.addEventListener("mouseenter", () => { if (shown) cur.style.opacity = "1"; });
     // Hide our cursor over iframes (Google Maps) → native map cursor takes over
     document.querySelectorAll("iframe").forEach((f) => {
       f.addEventListener("mouseenter", () => { cur.style.opacity = "0"; });
-      f.addEventListener("mouseleave", () => { cur.style.opacity = "1"; });
+      f.addEventListener("mouseleave", () => { if (shown) cur.style.opacity = "1"; });
     });
   }
 
