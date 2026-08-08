@@ -291,13 +291,18 @@ em.hl { font-style: normal; color: var(--accent-2); }
 .hero__title .outline { color: transparent; -webkit-text-stroke: 1.5px var(--text); }
 
 /* hero phones — compact box sized to its content (replaces the old kicker) */
-.hero__phones { display: inline-flex; width: fit-content; max-width: 100%; align-self: flex-start; align-items: center; gap: 16px; flex-wrap: wrap; padding: 12px 22px; border: 1px solid rgba(235,187,87,0.25); border-radius: 14px; background: rgba(12,11,10,0.42); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.hero__phones { display: inline-flex; width: fit-content; max-width: 100%; align-self: flex-start; align-items: center; gap: 14px; padding: 12px 22px; border: 1px solid rgba(235,187,87,0.25); border-radius: 14px; background: rgba(12,11,10,0.42); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .hero__phones-ico { display: inline-flex; color: var(--accent-2); flex: none; }
 .hero__phones-ico svg { width: 17px; height: 17px; }
+.hero__phones-nums { display: inline-flex; align-items: center; gap: 16px; }
 .hero__phones-sep { width: 1px; height: 16px; background: var(--line-2); flex: none; }
 .hero__phones a { font-family: var(--font-mono); font-size: clamp(14px, 1.4vw, 17px); font-weight: 500; letter-spacing: 0.02em; color: var(--text); white-space: nowrap; transition: color 0.3s var(--ease); }
 .hero__phones a:hover { color: var(--accent-2); }
-@media (max-width: 620px) { .hero__phones { gap: 8px 14px; } .hero__phones-sep { display: none; } }
+@media (max-width: 620px) {
+  .hero__phones { gap: 12px; padding: 12px 18px; }
+  .hero__phones-nums { flex-direction: column; align-items: flex-start; gap: 5px; }
+  .hero__phones-sep { display: none; }
+}
 
 .hero__bottom { display: flex; flex-wrap: wrap; gap: 26px 56px; align-items: flex-end; justify-content: space-between; }
 .hero__lead-wrap { max-width: 500px; display: flex; flex-direction: column; gap: 22px; }
@@ -575,6 +580,7 @@ em.hl { font-style: normal; color: var(--accent-2); }
   .price-row__time { display: none; }
   .form__row { grid-template-columns: 1fr; }
   .hero__side { display: none; }
+  .hero { align-items: center; }
   .hero__grid { grid-template-columns: 1fr; }
   .hero__bottom { flex-direction: column; align-items: flex-start; gap: 28px; }
   .section-head--split { flex-direction: column; align-items: flex-start; }
