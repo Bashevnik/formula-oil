@@ -23,7 +23,18 @@
   ========================================================== */
   const preloader = document.querySelector(".preloader");
   const introVideo = preloader ? preloader.querySelector(".preloader__video") : null;
-  const firstVisit = !sessionStorage.getItem("fo_visited");
+
+  // Intro plays on a FRESH session entry (direct / bookmark / external link /
+  // reopened after closing / cleared data) — from any page. It must NOT replay
+  // on internal page switches or on refresh (F5) within the same session.
+  // sessionStorage is the only thing that distinguishes a new browsing session
+  // from an F5/navigation; document.referrer is a safety net when storage is
+  // blocked (private mode) so internal navigation still never replays it.
+  const seenIntro = () => { try { return sessionStorage.getItem("fo_intro") === "1"; } catch (e) { return false; } };
+  const markIntroSeen = () => { try { sessionStorage.setItem("fo_intro", "1"); } catch (e) {} };
+  let cameFromSameSite = false;
+  try { cameFromSameSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
+  const shouldPlayIntro = !seenIntro() && !cameFromSameSite;
 
   // scroll lock that preserves position and never removes the scrollbar
   // (see body.is-locked in CSS — position:fixed, permanent html scrollbar).
@@ -99,10 +110,10 @@
     setTimeout(forceHide, 6500);
     setTimeout(() => { try { setLock(false); } catch (e) {} forceRevealHero(); }, 7500);
 
-    sessionStorage.setItem("fo_visited", "1");
+    markIntroSeen();   // once we've entered this session, don't replay on F5 / nav
 
-    // Returning visitor / reduced motion / no video → skip the intro, hide fast.
-    if (!preloader || prefersReduced || !firstVisit || !introVideo) {
+    // Internal navigation / refresh / reduced motion / no video → skip, hide fast.
+    if (!preloader || prefersReduced || !shouldPlayIntro || !introVideo) {
       whenImagesReady(1000).then(() => hidePreloader(true));
       return;
     }
