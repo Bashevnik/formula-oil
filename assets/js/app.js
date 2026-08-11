@@ -22,10 +22,7 @@
      PRELOADER
   ========================================================== */
   const preloader = document.querySelector(".preloader");
-  const bar = preloader ? preloader.querySelector(".preloader__bar i") : null;
-  const dropFill = preloader ? preloader.querySelector(".preloader__mark .drop-fill") : null;
-  const wordSpans = preloader ? preloader.querySelectorAll(".preloader__word span") : [];
-  const countEl = preloader ? preloader.querySelector(".preloader__count") : null;
+  const introVideo = preloader ? preloader.querySelector(".preloader__video") : null;
   const firstVisit = !sessionStorage.getItem("fo_visited");
 
   // scroll lock that preserves position and never removes the scrollbar
@@ -76,9 +73,8 @@
 
   function hidePreloader(quick) {
     if (!preloader || !hasGSAP || prefersReduced) { forceHide(); return; }
-    gsap.to(preloader.querySelector(".preloader__logo"), { y: -18, opacity: 0, duration: 0.5, ease: "power2.in" });
-    gsap.to(preloader, { yPercent: -100, duration: 0.85, ease: "power4.inOut", delay: quick ? 0.05 : 0.15, onComplete: forceHide });
-    setTimeout(forceHide, 1400);
+    gsap.to(preloader, { opacity: 0, duration: quick ? 0.4 : 0.6, ease: "power2.inOut", onComplete: forceHide });
+    setTimeout(forceHide, 1000);
   }
 
   // Resolve once the above-the-fold images are actually decoded (so the page is
@@ -99,32 +95,28 @@
 
   function runPreloader() {
     setLock(true);
-    // Unconditional safety nets: no matter what stalls (image decode, a GSAP
-    // hiccup on iOS Safari, etc.) the preloader lifts and the hero shows.
-    setTimeout(forceHide, 4000);
-    setTimeout(() => { try { setLock(false); } catch (e) {} forceRevealHero(); }, 5500);
-    if (!preloader || !hasGSAP || prefersReduced) {
-      whenImagesReady(1200).then(() => hidePreloader(true));
-      sessionStorage.setItem("fo_visited", "1");
+    // Unconditional safety nets: whatever stalls, the preloader lifts + hero shows.
+    setTimeout(forceHide, 6500);
+    setTimeout(() => { try { setLock(false); } catch (e) {} forceRevealHero(); }, 7500);
+
+    sessionStorage.setItem("fo_visited", "1");
+
+    // Returning visitor / reduced motion / no video → skip the intro, hide fast.
+    if (!preloader || prefersReduced || !firstVisit || !introVideo) {
+      whenImagesReady(1000).then(() => hidePreloader(true));
       return;
     }
-    if (firstVisit) {
-      const counter = { v: 0 };
-      const tl = gsap.timeline({ onComplete: () => whenImagesReady(1400).then(() => hidePreloader(false)) });
-      tl.set(wordSpans, { yPercent: 110 })
-        .set(dropFill, { opacity: 0 })
-        .to(dropFill, { opacity: 1, duration: 0.6, ease: "power2.out" }, 0.1)
-        .to(wordSpans, { yPercent: 0, duration: 0.7, stagger: 0.03, ease: "power4.out" }, 0.15)
-        .to(bar, { width: "100%", duration: 1.25, ease: "power2.inOut" }, 0.2)
-        .to(counter, { v: 100, duration: 1.25, ease: "power2.inOut", onUpdate: () => { if (countEl) countEl.textContent = Math.round(counter.v); } }, 0.2)
-        .to(".preloader__sub", { opacity: 1, duration: 0.4 }, 0.5);
-      sessionStorage.setItem("fo_visited", "1");
-    } else {
-      const tl = gsap.timeline({ onComplete: () => whenImagesReady(900).then(() => hidePreloader(true)) });
-      tl.set(wordSpans, { yPercent: 0 }).set(dropFill, { opacity: 1 })
-        .fromTo(preloader.querySelector(".preloader__logo"), { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" })
-        .to(bar, { width: "100%", duration: 0.55, ease: "power2.inOut" }, 0.1);
-    }
+
+    // First visit → play the branded intro clip, load the page behind it, then
+    // reveal once it ends (and the hero image is ready).
+    let done = false;
+    const finish = () => { if (done) return; done = true; whenImagesReady(1500).then(() => hidePreloader(false)); };
+    introVideo.muted = true;
+    introVideo.addEventListener("ended", finish, { once: true });
+    introVideo.addEventListener("error", finish, { once: true });
+    const play = introVideo.play();
+    if (play && play.catch) play.catch(() => finish());   // autoplay blocked → reveal
+    setTimeout(finish, 5000);                             // failsafe if 'ended' never fires
   }
 
   window.addEventListener("load", () => {

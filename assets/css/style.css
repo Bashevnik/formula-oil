@@ -262,18 +262,9 @@ em.hl { font-style: normal; color: var(--accent-2); }
 /* ============================================================
    PRELOADER & TRANSITION
    ============================================================ */
-.preloader { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+.preloader { position: fixed; inset: 0; z-index: 200; background: #000; display: grid; place-items: center; overflow: hidden; will-change: opacity; }
 .preloader.is-hidden { display: none; }
-.preloader__logo { display: flex; flex-direction: column; align-items: center; gap: 18px; }
-.preloader__mark { width: 78px; height: 78px; }
-.preloader__mark .drop { fill: none; stroke: var(--accent-2); stroke-width: 5; }
-.preloader__mark .drop-fill { fill: url(#oilgrad); opacity: 0; }
-.preloader__word { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.7rem, 5vw, 2.6rem); letter-spacing: 0.02em; display: flex; gap: 0.06em; overflow: hidden; }
-.preloader__word span { display: inline-block; }
-.preloader__sub { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--muted); }
-.preloader__bar { width: min(260px, 62vw); height: 2px; background: var(--line); border-radius: 2px; overflow: hidden; }
-.preloader__bar i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); box-shadow: 0 0 16px var(--accent-glow); }
-.preloader__count { position: absolute; bottom: 40px; right: var(--gutter); font-family: var(--font-display); font-size: clamp(3rem, 12vw, 8rem); color: transparent; -webkit-text-stroke: 1px var(--line-2); line-height: 0.8; }
+.preloader__video { width: 100%; height: 100%; object-fit: contain; background: #000; }
 
 .transition { position: fixed; inset: 0; z-index: 99; background: var(--bg); display: flex; align-items: center; justify-content: center; transform: translateY(100%); pointer-events: none; }
 .transition__mark { width: 64px; height: 64px; opacity: 0; }
