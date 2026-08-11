@@ -24,17 +24,28 @@
   const preloader = document.querySelector(".preloader");
   const introVideo = preloader ? preloader.querySelector(".preloader__video") : null;
 
-  // Intro plays on a FRESH session entry (direct / bookmark / external link /
-  // reopened after closing / cleared data) — from any page. It must NOT replay
-  // on internal page switches or on refresh (F5) within the same session.
-  // sessionStorage is the only thing that distinguishes a new browsing session
-  // from an F5/navigation; document.referrer is a safety net when storage is
-  // blocked (private mode) so internal navigation still never replays it.
-  const seenIntro = () => { try { return sessionStorage.getItem("fo_intro") === "1"; } catch (e) { return false; } };
-  const markIntroSeen = () => { try { sessionStorage.setItem("fo_intro", "1"); } catch (e) {} };
+  // Intro plays on a fresh ENTRY to the site (direct / bookmark / external link /
+  // reopened) from ANY page, and on a page reload (F5 / Ctrl+F5). It is skipped
+  // ONLY on internal page switches (and back/forward) so clicking around the
+  // site never re-triggers it. NB: browsers can't tell a soft reload from a hard
+  // (Ctrl+F5) reload — both report "reload", so both play.
+  const readNavType = () => {
+    try {
+      const e = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+      if (e && e.type) return e.type;
+      if (performance.navigation) return ["navigate", "reload", "back_forward", "reserved"][performance.navigation.type] || "navigate";
+    } catch (err) {}
+    return "navigate";
+  };
+  const navType = readNavType();
   let cameFromSameSite = false;
   try { cameFromSameSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
-  const shouldPlayIntro = !seenIntro() && !cameFromSameSite;
+  let beenHere = false;
+  try { beenHere = sessionStorage.getItem("fo_here") === "1"; sessionStorage.setItem("fo_here", "1"); } catch (e) {}
+  // internal navigation = a plain navigation that came from our own site
+  // (referrer same-origin, or we've already loaded a page this session)
+  const isInternalNav = navType === "navigate" && (cameFromSameSite || beenHere);
+  const shouldPlayIntro = !isInternalNav && navType !== "back_forward";
 
   // scroll lock that preserves position and never removes the scrollbar
   // (see body.is-locked in CSS — position:fixed, permanent html scrollbar).
@@ -110,9 +121,7 @@
     setTimeout(forceHide, 6500);
     setTimeout(() => { try { setLock(false); } catch (e) {} forceRevealHero(); }, 7500);
 
-    markIntroSeen();   // once we've entered this session, don't replay on F5 / nav
-
-    // Internal navigation / refresh / reduced motion / no video → skip, hide fast.
+    // Internal navigation / back-forward / reduced motion / no video → skip fast.
     if (!preloader || prefersReduced || !shouldPlayIntro || !introVideo) {
       whenImagesReady(1000).then(() => hidePreloader(true));
       return;
